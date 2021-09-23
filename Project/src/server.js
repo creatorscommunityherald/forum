@@ -16,8 +16,20 @@ app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
+// Importing the mongoose connection file
+require('./db/mongodb')
+
+// Importing routers
+const userRouters = require('./routers/userRouters')
+const postRouters = require('./routers/postRouters')
+
 //Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
+
+// Using the userRouters and postRouters
+app.use(userRouters)
+app.use(postRouters)
+
 
 // Home page
 app.get('', (req, res) => {
@@ -36,7 +48,7 @@ app.get('/help', (req, res) => {
 
 // Handling 404
 app.get('*', (req, res) => {
-    res.render('404', { title: "404" })
+    res.status(404).render('404', { title: "404" })
 })
 
 
