@@ -19,12 +19,17 @@ hbs.registerPartials(partialsPath)
 // Importing the mongoose connection file
 require('./db/mongodb')
 
+
+
 // Importing routers
 const userRouters = require('./routers/userRouters')
 const postRouters = require('./routers/postRouters')
 
 //Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
+
+//express middleware to parse incoming JSON into objects
+app.use(express.json())
 
 // Using the userRouters and postRouters
 app.use(userRouters)
