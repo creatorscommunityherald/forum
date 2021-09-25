@@ -8,7 +8,7 @@ const Post = require('./models/post')
 const User = require('./models/user')
 
 // Connection to DB
-mongoose.connect('mongodb://localhost:27017/forum-app')
+mongoose.connect('mongodb+srv://leohang:Loveumom9841@cluster0.q6pro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority/forum-app')
 
 
 
