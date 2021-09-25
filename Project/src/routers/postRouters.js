@@ -1,5 +1,8 @@
+// Express setup
 const express = require('express')
 const router = new express.Router()
+
+// Importing mongoose for ObjectId validation
 const mongoose = require('mongoose')
 
 //Importing the Post model
