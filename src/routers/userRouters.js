@@ -72,17 +72,22 @@ router.patch('/users/:id', async(req, res) => {
 
     // If the id is valid and the operation is valid as well, proceed to patching the instance
     try{
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new:true, runValidators: true})
-        
+        // Grab the user document by their id
+        const user = await User.findById(req.params.id)
         // if the user for the specified id does not exist. (NOTE: it returns null)
         if(!user){
             return res.status(404).send("The user for the specified ID was not found.")
-        }
+        } 
+        // Apply all the specified updates to the user document
+        clientUpdates.forEach((clientUpdate) => {
+            user[clientUpdate] = req.body[clientUpdate]
+        })
+        await user.save()
         res.send(user)
     } 
     // This handles the validation error and db connection error
     catch(error){
-        res.status(400).send(error)
+        res.status(400).send("Something went wrong")
     }
 })
 

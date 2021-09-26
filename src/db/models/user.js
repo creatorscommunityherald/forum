@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
 
 // Defining the schema for User model
 const userSchema = new mongoose.Schema({
@@ -45,6 +46,14 @@ const userSchema = new mongoose.Schema({
         type: "String",
         required: false
     }
+})
+
+userSchema.pre('save', async function(next){
+    const user = this
+    if(user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+    next()
 })
 
 // Defining the User model
