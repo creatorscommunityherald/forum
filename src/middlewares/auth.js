@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../db/models/user')
 
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
     try{
         // if the token does not exist, .replace() will throw an error which will be handled by the catch phrase
         // .replace() to remove the "Bearer " portion of the string

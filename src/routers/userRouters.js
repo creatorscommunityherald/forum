@@ -8,8 +8,12 @@ const mongoose = require('mongoose')
 // Importing the User model
 const User = require('../db/models/user')
 
+// Import middlewares
+const auth = require('../middlewares/auth')
+
+
 // API endpoint for "GET /users"
-router.get('/users', async (req, res) => {
+router.get('/users', auth, async (req, res) => {
     try {
         const users = await User.find({})
         res.send(users)
@@ -20,6 +24,11 @@ router.get('/users', async (req, res) => {
     }
 })
 
+
+// API endpoint for user profile
+router.get('/users/me', auth, async(req, res) => {
+    res.send(req.user)
+})
 
 // API endpoint for login
 router.post('/users/login', async(req, res) => {
