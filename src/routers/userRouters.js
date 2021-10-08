@@ -43,6 +43,31 @@ router.post('/users/login', async(req, res) => {
     }
 })
 
+//API endpoint for logout
+router.post('/users/logout', auth, async(req, res) => {
+    try {
+        // Filtering and removing the current token
+        // filter and save only those tokens which do not equal to the current token
+        req.user.tokens = req.user.tokens.filter(token => token.token != req.token)
+        // token.token because each token document in the user.tokens array is saved as {_id:id, token: tokenvalue}
+        await req.user.save()
+        res.send()
+    } catch(e){
+        res.status(500).send()
+    }    
+})
+
+// API endpoint for logoutAll
+router.post('/users/logoutAll', auth, async(req, res) => {
+    try{
+        req.user.tokens = []
+        await req.user.save()
+        res.status(200).send()
+    } catch(e) {
+        res.status(500).send()
+    }
+})
+
 // API endpoint for "POST /users"
 router.post('/users', async (req, res) => {
     // Checking if the client details conflict already existing username, email or phone number

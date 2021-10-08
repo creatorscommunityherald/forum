@@ -17,6 +17,8 @@ const auth = async (req, res, next) => {
             throw new Error()
         }
 
+        //pass the token in the req object
+        req.token = token
         // pass this user in the req object so that it can be used by other route handlers
         req.user = user
         next()
