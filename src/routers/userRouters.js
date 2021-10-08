@@ -21,6 +21,19 @@ router.get('/users', async (req, res) => {
 })
 
 
+// API endpoint for login
+router.post('/users/login', async(req, res) => {
+    try{
+        // fincByCredentials() is a models.statics method defined in the userSchema
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        // generateAuthToken() is a models.methods method defined in the userSchema
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
+    } catch(e) {
+        res.status(400).send(e.message)
+    }
+})
+
 // API endpoint for "POST /users"
 router.post('/users', async (req, res) => {
     // Checking if the client details conflict already existing username, email or phone number
@@ -43,7 +56,9 @@ router.post('/users', async (req, res) => {
     try {
         // save the user instance
         await user.save()
-        res.status(201).send(user)
+        // generateAuthToken() is a model.methods method defined in the userSchema
+        const token = await user.generateAuthToken()
+        res.status(201).send({ user, token })
     } catch (error) {
         // This handles db errors and validation errors
         res.status(400).send(error)

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 // Defining the schema for User model
 const userSchema = new mongoose.Schema({
@@ -45,9 +46,45 @@ const userSchema = new mongoose.Schema({
     img: {
         type: "String",
         required: false
-    }
+    },
+
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 
+
+userSchema.statics.findByCredentials = async(email, password) => {
+    // check if a user for the given email exists
+    const user = await User.findOne({ email })
+    
+    if(!user) {
+        throw new Error('Email or password invalid')
+    }
+
+    // check if the password matches
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if (!isMatch){
+        throw new Error('Email or password invalid')
+    }
+
+    // in case email and password are valid
+    return user
+}
+
+userSchema.methods.generateAuthToken = async function(){
+    const user = this
+    const token = jwt.sign({ _id: user._id.toString() }, 'dummy-signature')
+    user.tokens.push({token})
+    await user.save()
+    return token
+}
+
+// password-hashing
 userSchema.pre('save', async function(next){
     const user = this
     if(user.isModified('password')) {
